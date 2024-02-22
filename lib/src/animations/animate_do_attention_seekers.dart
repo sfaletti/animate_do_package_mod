@@ -249,6 +249,7 @@ class Pulse extends StatefulWidget {
   final bool animate;
   final Function(AnimateDoDirection direction)? onFinish;
   final Curve curve;
+  final double maxScale;
 
   Pulse(
       {key,
@@ -260,6 +261,7 @@ class Pulse extends StatefulWidget {
       this.manualTrigger = false,
       this.animate = true,
       this.onFinish,
+      this.maxScale = 1.5,
       this.curve = Curves.easeOut})
       : super(key: key) {
     if (manualTrigger == true && controller == null) {
@@ -291,13 +293,15 @@ class PulseState extends State<Pulse>
 
     controller = AnimationController(duration: widget.duration, vsync: this);
 
-    animationInc = Tween<double>(begin: 1, end: 1.5).animate(CurvedAnimation(
-        parent: controller,
-        curve: Interval(0, 0.5, curve: widget.curve))); // Curves.easeOut
+    animationInc = Tween<double>(begin: 1, end: widget.maxScale).animate(
+        CurvedAnimation(
+            parent: controller,
+            curve: Interval(0, 0.5, curve: widget.curve))); // Curves.easeOut
 
-    animationDec = Tween<double>(begin: 1.5, end: 1).animate(CurvedAnimation(
-        parent: controller,
-        curve: Interval(0.5, 1, curve: widget.curve))); // Curves.easeIn
+    animationDec = Tween<double>(begin: widget.maxScale, end: 1).animate(
+        CurvedAnimation(
+            parent: controller,
+            curve: Interval(0.5, 1, curve: widget.curve))); // Curves.easeIn
 
     /// Provided by the mixing [AnimateDoState] class
     configAnimation(
